@@ -1,0 +1,19 @@
+{
+  "name": "vscode-stylecop-manager",
+  "version": "0.1.0",
+  "description": "Provides StyleCop Management support to VSCode",
+  "homepage": "https://github.com/Joaquin6/vscode-stylecop-manager#readme",
+  "author": "Joaquin Briceno <joaquinbriceno1@gmail.com>",
+  "license": "ISC",
+  "main": "./out/extension",
+  "bugs": {
+    "url": "https://github.com/Joaquin6/vscode-stylecop-manager/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joaquin6/vscode-stylecop-manager.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
