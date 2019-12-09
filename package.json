@@ -1,9 +1,11 @@
 {
   "name": "vscode-stylecop-manager",
+  "displayName": "vscode-stylecop-manager",
   "version": "0.1.0",
   "description": "Provides StyleCop Management support to VSCode",
   "homepage": "https://github.com/Joaquin6/vscode-stylecop-manager#readme",
   "author": "Joaquin Briceno <joaquinbriceno1@gmail.com>",
+  "publisher": "joaquin6",
   "license": "ISC",
   "main": "./out/extension",
   "icon": "images/icon.png",
@@ -24,6 +26,953 @@
     "*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "vscode:prepublish": "webpack --mode production",
+    "compile": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "stylecop-manager",
+          "title": "StyleCop Manager",
+          "icon": "images/activity-icon.png",
+          "when": "!stylecopManager.viewInExplorer && !stylecopManager.viewInNone && stylecopManager.loadedFlag"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "stylecopManager",
+          "name": "Solution Explorer",
+          "when": "!stylecopManager.viewInActivityBar && !stylecopManager.viewInNone && stylecopManager.loadedFlag"
+        }
+      ],
+      "stylecop-manager": [
+        {
+          "id": "stylecopManager",
+          "name": "Explorer",
+          "when": "!stylecopManager.viewInExplorer && !stylecopManager.viewInNone && stylecopManager.loadedFlag"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "stylecopManager.refresh",
+        "title": "Refresh",
+        "icon": {
+          "light": "icons/refresh-light.svg",
+          "dark": "icons/refresh-dark.svg"
+        }
+      },
+      {
+        "command": "stylecopManager.collapseAll",
+        "title": "Collapse All",
+        "icon": {
+          "light": "icons/collapse-all_light.svg",
+          "dark": "icons/collapse-all_dark.svg"
+        }
+      },
+      {
+        "command": "stylecopManager.openFile",
+        "title": "Open File"
+      },
+      {
+        "command": "stylecopManager.renameFile",
+        "title": "Rename"
+      },
+      {
+        "command": "stylecopManager.deleteFile",
+        "title": "Delete"
+      },
+      {
+        "command": "stylecopManager.createFile",
+        "title": "Create file",
+        "icon": {
+          "light": "icons/add-file_light.svg",
+          "dark": "icons/add-file_dark.svg"
+        }
+      },
+      {
+        "command": "stylecopManager.renameFolder",
+        "title": "Rename"
+      },
+      {
+        "command": "stylecopManager.deleteFolder",
+        "title": "Delete"
+      },
+      {
+        "command": "stylecopManager.createFolder",
+        "title": "Create folder",
+        "icon": {
+          "light": "icons/add-folder_light.svg",
+          "dark": "icons/add-folder_dark.svg"
+        }
+      },
+      {
+        "command": "stylecopManager.moveFile",
+        "title": "Move to folder"
+      },
+      {
+        "command": "stylecopManager.moveFolder",
+        "title": "Move to folder"
+      },
+      {
+        "command": "stylecopManager.addPackage",
+        "title": "Add package"
+      },
+      {
+        "command": "stylecopManager.removePackage",
+        "title": "Remove package"
+      },
+      {
+        "command": "stylecopManager.addProjectReference",
+        "title": "Add reference"
+      },
+      {
+        "command": "stylecopManager.removeProjectReference",
+        "title": "Remove reference"
+      },
+      {
+        "command": "stylecopManager.createNewSolution",
+        "title": "Create new empty solution"
+      },
+      {
+        "command": "stylecopManager.addNewProject",
+        "title": "Add new project"
+      },
+      {
+        "command": "stylecopManager.addExistingProject",
+        "title": "Add existing project"
+      },
+      {
+        "command": "stylecopManager.createSolutionFolder",
+        "title": "Create folder"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "title": "Rename"
+      },
+      {
+        "command": "stylecopManager.moveToSolutionFolder",
+        "title": "Move"
+      },
+      {
+        "command": "stylecopManager.removeSolutionFolder",
+        "title": "Remove"
+      },
+      {
+        "command": "stylecopManager.removeProject",
+        "title": "Remove project from solution"
+      },
+      {
+        "command": "stylecopManager.copy",
+        "title": "Copy"
+      },
+      {
+        "command": "stylecopManager.duplicate",
+        "title": "Create a copy"
+      },
+      {
+        "command": "stylecopManager.paste",
+        "title": "Paste"
+      },
+      {
+        "command": "stylecopManager.build",
+        "title": "Build"
+      },
+      {
+        "command": "stylecopManager.clean",
+        "title": "Clean"
+      },
+      {
+        "command": "stylecopManager.pack",
+        "title": "Pack"
+      },
+      {
+        "command": "stylecopManager.publish",
+        "title": "Publish"
+      },
+      {
+        "command": "stylecopManager.restore",
+        "title": "Restore"
+      },
+      {
+        "command": "stylecopManager.run",
+        "title": "Run"
+      },
+      {
+        "command": "stylecopManager.test",
+        "title": "Test"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "stylecopManager.refresh",
+          "when": "view == stylecopManager",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "stylecopManager.refresh",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.refresh",
+          "when": "view == stylecopManager && viewItem == solution-folder",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.refresh",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.refresh",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.refresh",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.copy",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.copy",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.duplicate",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.paste",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.paste",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.paste",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.paste",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "5_cutcopypaste"
+        },
+        {
+          "command": "stylecopManager.renameFile",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.deleteFile",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.createFile",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.renameFolder",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.deleteFolder",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.createFolder",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "inline"
+        },
+        {
+          "command": "stylecopManager.moveFile",
+          "when": "view == stylecopManager && viewItem == project-file",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.moveFolder",
+          "when": "view == stylecopManager && viewItem == project-folder",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.addPackage",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addPackage",
+          "when": "view == stylecopManager && viewItem == project-referenced-packages-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addPackage",
+          "when": "view == stylecopManager && viewItem == project-referenced-package-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.removePackage",
+          "when": "view == stylecopManager && viewItem == project-referenced-package-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addProjectReference",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addProjectReference",
+          "when": "view == stylecopManager && viewItem == project-referenced-projects-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addProjectReference",
+          "when": "view == stylecopManager && viewItem == project-referenced-project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.removeProjectReference",
+          "when": "view == stylecopManager && viewItem == project-referenced-project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.openFile",
+          "when": "view == stylecopManager && viewItem == solution",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.openFile",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.openFile",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.openFile",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.openFile",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.createNewSolution",
+          "when": "view == stylecopManager && viewItem == no-solution",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addNewProject",
+          "when": "view == stylecopManager && viewItem == solution",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addExistingProject",
+          "when": "view == stylecopManager && viewItem == solution",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addNewProject",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.addExistingProject",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.removeProject",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.removeProject",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.removeProject",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createSolutionFolder",
+          "when": "view == stylecopManager && viewItem == solution",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createSolutionFolder",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.createSolutionFolder",
+          "when": "view == stylecopManager && viewItem == solution-folder",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.removeSolutionFolder",
+          "when": "view == stylecopManager && viewItem == solution-folder",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.moveToSolutionFolder",
+          "when": "view == stylecopManager && viewItem == solution-folder",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.moveToSolutionFolder",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.moveToSolutionFolder",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.moveToSolutionFolder",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "2_workspace"
+        },
+        {
+          "command": "stylecopManager.renameSolutionItem",
+          "when": "view == stylecopManager && viewItem == solution",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.renameSolutionItem",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.renameSolutionItem",
+          "when": "view == stylecopManager && viewItem == solution-folder",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.renameSolutionItem",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.renameSolutionItem",
+          "when": "view == stylecopManager && viewItem == project-standard",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.renameSolutionItem",
+          "when": "view == stylecopManager && viewItem == project-website",
+          "group": "7_modification"
+        },
+        {
+          "command": "stylecopManager.build",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.clean",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.pack",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.publish",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.restore",
+          "when": "view == stylecopManager && viewItem == solution-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.build",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.clean",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.pack",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.publish",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.restore",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.run",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        },
+        {
+          "command": "stylecopManager.test",
+          "when": "view == stylecopManager && viewItem == project-cps",
+          "group": "99_dotnet_commands"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "stylecopManager.copy",
+        "when": "view == stylecopManager && viewItem == project-folder",
+        "key": "ctrl+c",
+        "mac": "cmd+c"
+      },
+      {
+        "command": "stylecopManager.copy",
+        "when": "view == stylecopManager && viewItem == project-file",
+        "key": "ctrl+c",
+        "mac": "cmd+c"
+      },
+      {
+        "command": "stylecopManager.paste",
+        "when": "view == stylecopManager && viewItem == project-folder",
+        "key": "ctrl+v",
+        "mac": "cmd+v"
+      },
+      {
+        "command": "stylecopManager.paste",
+        "when": "view == stylecopManager && viewItem == project-cps",
+        "key": "ctrl+v",
+        "mac": "cmd+v"
+      },
+      {
+        "command": "stylecopManager.paste",
+        "when": "view == stylecopManager && viewItem == project-standard",
+        "key": "ctrl+v",
+        "mac": "cmd+v"
+      },
+      {
+        "command": "stylecopManager.paste",
+        "when": "view == stylecopManager && viewItem == project-website",
+        "key": "ctrl+v",
+        "mac": "cmd+v"
+      },
+      {
+        "command": "stylecopManager.renameFile",
+        "when": "view == stylecopManager && viewItem == project-file",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.deleteFile",
+        "when": "view == stylecopManager && viewItem == project-file",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.renameFolder",
+        "when": "view == stylecopManager && viewItem == project-folder",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.deleteFolder",
+        "when": "view == stylecopManager && viewItem == project-folder",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.createFile",
+        "when": "view == stylecopManager && viewItem == project-cps",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "stylecopManager.createFile",
+        "when": "view == stylecopManager && viewItem == project-standard",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "stylecopManager.createFile",
+        "when": "view == stylecopManager && viewItem == project-website",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "stylecopManager.createFile",
+        "when": "view == stylecopManager && viewItem == project-file",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "stylecopManager.createFile",
+        "when": "view == stylecopManager && viewItem == project-folder",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "stylecopManager.createFolder",
+        "when": "view == stylecopManager && viewItem == project-cps",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.createFolder",
+        "when": "view == stylecopManager && viewItem == project-standard",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.createFolder",
+        "when": "view == stylecopManager && viewItem == project-website",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.createFolder",
+        "when": "view == stylecopManager && viewItem == project-file",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.createFolder",
+        "when": "view == stylecopManager && viewItem == project-folder",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.removePackage",
+        "when": "view == stylecopManager && viewItem == project-referenced-package-cps",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.removeProjectReference",
+        "when": "view == stylecopManager && viewItem == project-referenced-project-cps",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.createSolutionFolder",
+        "when": "view == stylecopManager && viewItem == solution",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.createSolutionFolder",
+        "when": "view == stylecopManager && viewItem == solution-cps",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.createSolutionFolder",
+        "when": "view == stylecopManager && viewItem == solution-folder",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "stylecopManager.removeSolutionFolder",
+        "when": "view == stylecopManager && viewItem == solution-folder",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.removeProject",
+        "when": "view == stylecopManager && viewItem == project-cps",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.removeProject",
+        "when": "view == stylecopManager && viewItem == project-standard",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.removeProject",
+        "when": "view == stylecopManager && viewItem == project-website",
+        "key": "delete",
+        "mac": "delete"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "when": "view == stylecopManager && viewItem == solution",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "when": "view == stylecopManager && viewItem == solution-cps",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "when": "view == stylecopManager && viewItem == solution-folder",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "when": "view == stylecopManager && viewItem == project-cps",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "when": "view == stylecopManager && viewItem == project-standard",
+        "key": "f2",
+        "mac": "f2"
+      },
+      {
+        "command": "stylecopManager.renameSolutionItem",
+        "when": "view == stylecopManager && viewItem == project-website",
+        "key": "f2",
+        "mac": "f2"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "vscode-stylecop-manager configuration",
+      "properties": {
+        "vssolution.showMode": {
+          "type": "string",
+          "enum": [
+            "activityBar",
+            "explorer",
+            "none"
+          ],
+          "default": "activityBar",
+          "description": "Show the solution explorer in the activity bar, in the explorer pane or don't show it."
+        },
+        "vssolution.stylecopManagerIcons": {
+          "type": "string",
+          "enum": [
+            "current-theme",
+            "mix",
+            "stylecop-manager"
+          ],
+          "default": "stylecop-manager",
+          "description": "stylecop-manager -> Uses the vscode-stylecop-manager custom icons\nmix -> use current theme icons for files and folders\ncurrent-theme -> Uses the installed icon theme"
+        },
+        "vssolution.showOutputChannel": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the solution explorer output channel."
+        },
+        "vssolution.trackActiveItem": {
+          "type": "boolean",
+          "default": false,
+          "description": "Select the active editor file in the solution explorer."
+        },
+        "vssolution.netcoreIgnore": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "bin",
+            "node_modules",
+            "obj",
+            ".ds_store"
+          ],
+          "description": "Folder and filenames to ignore when get a dotnet core project content"
+        },
+        "vssolution.xxprojItemTypes": {
+          "type": "object",
+          "default": {
+            "*": "Content",
+            "cs": "Compile",
+            "cpp": "ClCompile",
+            "cc": "ClCompile",
+            "c": "ClCompile",
+            "h": "ClInclude",
+            "hpp": "ClInclude",
+            "vb": "Compile",
+            "fs": "Compile",
+            "ts": "TypeScriptCompile"
+          },
+          "description": "Type of XML element to put in the xxproj files."
+        },
+        "vssolution.xmlspaces": {
+          "type": "string",
+          "default": "2",
+          "description": "Spaces to be used for indenting XML output. It could be a number or an string. ex. \"2\", \" \" or \"\\t\"."
+        },
+        "vssolution.xmlClosingTagSpace": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Add space at the end of XML closing tag, ex: \" />\""
+        },
+        "vssolution.altSolutionFolders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "src"
+          ],
+          "description": "If there is no solution in the workplace root folder, it will search for solutions in any of these folders."
+        },
+        "vssolution.win32Encoding": {
+          "type": "object",
+          "default": {
+            "932": "Shift_JIS",
+            "936": "GBK",
+            "950": "BIG5"
+          },
+          "description": "Win32 codepage -> iconv.js encoding equivalences."
+        },
+        "vssolution.createTemplateFolderQuestion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Ask to create the solution template folder when none exists."
+        },
+        "vssolution.lineEndings": {
+          "type": "string",
+          "enum": [
+            "lf",
+            "crlf"
+          ],
+          "default": "lf",
+          "description": "Controls line endings of solution and project files."
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "clipboardy": "^2.1.0",
+    "eol": "^0.9.1",
+    "handlebars": "^4.5.3",
+    "iconv-lite": "^0.5.0",
+    "uuid": "^3.3.3",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@types/handlebars": "^4.1.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.15",
+    "@types/xml-js": "^1.0.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3",
+    "vscode": "^1.1.36",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }
