@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "../async/fs"
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { SolutionProjectType, ProjectInSolution, SolutionFile } from "../model/Solutions";
@@ -8,7 +8,7 @@ import { InputOptionsCommandParameter } from "./parameters/InputOptionsCommandPa
 
 export class MoveToSolutionFolderCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Move to solution folder');
     }
 
@@ -31,7 +31,7 @@ export class MoveToSolutionFolderCommand extends CommandBase {
 
         try {
             let data: string = await fs.readFile(item.solution.FullPath, 'utf8');
-            let lines: string[] = data.split('\n'); 
+            let lines: string[] = data.split('\n');
             let done: boolean = false;
             if (!projectInSolution.parentProjectGuid) {
                 if (args[0] == 'root') {
@@ -45,12 +45,12 @@ export class MoveToSolutionFolderCommand extends CommandBase {
                             '		' + projectInSolution.projectGuid + ' = ' + args[0] + '\r',
                         );
                         return true;
-                    }    
+                    }
 
                     if (line.trim() == 'EndGlobal') {
                         endGlobalIndex = index;
                     }
-    
+
                     return false;
                 });
 
@@ -84,7 +84,7 @@ export class MoveToSolutionFolderCommand extends CommandBase {
             }
         } catch(ex) {
             this.provider.logger.error('Can not move this item: ' + ex);
-        }    
+        }
     }
 
     private getFolders(solution: SolutionFile): Promise<{[id:string]: string}> {

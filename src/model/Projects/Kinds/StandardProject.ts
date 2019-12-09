@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as fs from "../../../async/fs";
 import * as xml from "../../../async/xml";
-import * as SolutionExplorerConfiguration from "../../../SolutionExplorerConfiguration";
+import * as StyleCopManagerConfiguration from "../../../StyleCopManagerConfiguration";
 import { ProjectInSolution } from "../../Solutions";
 import { ProjectFile } from "../ProjectFile";
 import { ProjectFolder } from "../ProjectFolder";
@@ -65,7 +65,7 @@ export class StandardProject extends FileSystemBasedProject {
                 let existingPathIndex = currentLevel.findIndex(i => i.name == part);
                 if (existingPathIndex >= 0) {
                     currentLevel = currentLevel[existingPathIndex].children;
-                } 
+                }
             });
         }
 
@@ -93,7 +93,7 @@ export class StandardProject extends FileSystemBasedProject {
             let y = b.name.toLowerCase();
             return x < y ? -1 : x > y ? 1 : 0;
         });
-    
+
         files.sort((a, b) => {
             let x = a.name.toLowerCase();
             let y = b.name.toLowerCase();
@@ -127,13 +127,13 @@ export class StandardProject extends FileSystemBasedProject {
 
     public async createFile(folderpath: string, filename: string, content?: string): Promise<string> {
         await this.checkProjectLoaded();
-        
+
         let folderRelativePath = this.getRelativePath(folderpath);
         let relativePath = path.join(folderRelativePath, filename);
         let extension = relativePath.split('.').pop().toLocaleLowerCase();
 
         let type = 'None';
-        let itemTypes = SolutionExplorerConfiguration.getItemTypes();
+        let itemTypes = StyleCopManagerConfiguration.getItemTypes();
         if (itemTypes[extension]) {
             type = itemTypes[extension];
         } else {
@@ -142,7 +142,7 @@ export class StandardProject extends FileSystemBasedProject {
 
         if (!type) type = 'None';
 
-        if (folderRelativePath) { 
+        if (folderRelativePath) {
             // maybe the folder was empty
             this.removeInNodes(folderRelativePath, true, ['Folder']);
         }
@@ -173,7 +173,7 @@ export class StandardProject extends FileSystemBasedProject {
         await this.checkProjectLoaded();
         let folderRelativePath = this.getRelativePath(folderpath);
         let parentRelativePath = path.dirname(folderRelativePath);
-        if (parentRelativePath) { 
+        if (parentRelativePath) {
             // maybe the container folder was empty
             this.removeInNodes(parentRelativePath, true, ['Folder']);
         }
@@ -264,7 +264,7 @@ export class StandardProject extends FileSystemBasedProject {
         let document =  await xml.ParseToJson(content);
         this.parseDocument(document);
     }
-    
+
     private parseDocument(document: any): void {
         this.loaded = true;
         this.document = document;
@@ -297,7 +297,7 @@ export class StandardProject extends FileSystemBasedProject {
         project.elements.forEach(element => {
             if (element.name === 'ItemGroup') {
                 if (!element.elements || !Array.isArray(element.elements)) element.elements = [];
-                
+
                 element.elements.forEach(e => {
                     if (e.name === 'Reference' || e.name === 'ProjectReference') {
                         let include = this.cleanIncludePath(e.attributes.Include);
@@ -332,10 +332,10 @@ export class StandardProject extends FileSystemBasedProject {
         this.packages = [];
         let packagesPath = path.join(path.dirname(this.fullPath), 'packages.config');
         if (!(await fs.exists(packagesPath))) return;
-        
+
         let content = await fs.readFile(packagesPath, 'utf8');
         let packageRegEx = /<package\s+id=\"(.*)\"\s+version=\"(.*)\"\s+targetFramework=\"(.*)\"/g;
-        let m: RegExpExecArray;        
+        let m: RegExpExecArray;
         while ((m = packageRegEx.exec(content)) !== null) {
             this.packages.push(new PackageReference(m[1].trim(), m[2].trim()));
         }
@@ -417,7 +417,7 @@ export class StandardProject extends FileSystemBasedProject {
         }
 
         let findPattern = ref => {
-            this.replaceDependsUponNode(ref, pattern, newPattern); 
+            this.replaceDependsUponNode(ref, pattern, newPattern);
 
             if (ref.attributes.Include.startsWith(pattern)) {
                 ref.attributes.Include = ref.attributes.Include.replace(pattern, newPattern);
@@ -475,7 +475,7 @@ export class StandardProject extends FileSystemBasedProject {
                 toDelete.forEach(e => {
                     element.elements.splice(element.elements.indexOf(e), 1);
                 });
-                
+
 
                 if (element.elements.length === 0) {
                     project.elements.splice(elementIndex, 1);
@@ -500,7 +500,7 @@ export class StandardProject extends FileSystemBasedProject {
 
     private currentItemGroupAdd(type: string, include: string, isFolder: boolean = false) {
         this.checkCurrentItemGroup();
-        
+
         include = include.replace(/\//g, '\\') + (isFolder ? '\\' : '');
 
         if (this.includePrefix) include = this.includePrefix + include;
@@ -557,14 +557,14 @@ export class StandardProject extends FileSystemBasedProject {
                 subItems.forEach(si => result.push(si));
             }
         }
-        
+
         return result;
     }
 
     private cleanIncludePath(include: string): string {
         if (this.includePrefix)
             return include.replace(this.includePrefix, "");
-        
+
         return include;
     }
 
@@ -580,7 +580,7 @@ export class StandardProject extends FileSystemBasedProject {
             "None",
             "Folder"
         ];
-        let itemTypes = SolutionExplorerConfiguration.getItemTypes();
+        let itemTypes = StyleCopManagerConfiguration.getItemTypes();
         Object.keys(itemTypes).forEach(key => {
             if (result.indexOf(itemTypes[key]) < 0) {
                 result.push(itemTypes[key]);

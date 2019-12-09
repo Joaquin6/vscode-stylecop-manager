@@ -2,13 +2,13 @@ import * as fs from "../async/fs";
 import * as path from "path";
 import * as clipboardy from "clipboardy";
 import * as Utilities from "../model/Utilities";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 
 export class PasteCommand extends CommandBase {
-    
-    constructor(private readonly provider: SolutionExplorerProvider) {
+
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Paste');
     }
 
@@ -17,10 +17,10 @@ export class PasteCommand extends CommandBase {
         return false;
     }
 
-    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {    
+    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {
         let data = await clipboardy.read();
-        if (!data) return;     
-        
+        if (!data) return;
+
         if (!(await fs.exists(data))) return;
 
         let targetpath: string = item.path;
@@ -52,17 +52,17 @@ export class PasteCommand extends CommandBase {
 
     private async copyFile(item: TreeItem, sourcepath: string, targetpath: string): Promise<void> {
         try {
-            let filename = path.basename(sourcepath);            
+            let filename = path.basename(sourcepath);
             let filepath = path.join(targetpath, filename);
             filepath = await Utilities.createCopyName(filepath);
             filename = path.basename(filepath);
-            
+
             let content = await fs.readFile(sourcepath, "utf8");
             filepath = await item.project.createFile(targetpath, filename, content);
             this.provider.logger.log("File copied: " + sourcepath + ' -> ' + filepath);
         } catch(ex) {
             this.provider.logger.error('Can not copy file: ' + ex);
-        }    
+        }
     }
 
     private async getFilesToCopyFromDirectory(sourcepath: string, targetpath: string): Promise<{[id: string]: string}> {

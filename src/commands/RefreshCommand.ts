@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 
 export class RefreshCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Refresh');
     }
 
@@ -13,7 +13,7 @@ export class RefreshCommand extends CommandBase {
         return true;
     }
 
-    protected runCommand(item: TreeItem, args: string[]): Promise<void> {       
+    protected runCommand(item: TreeItem, args: string[]): Promise<void> {
         if (item) {
             item.refresh();
             this.provider.logger.log("Refreshed " + item.path);

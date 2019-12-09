@@ -1,7 +1,7 @@
 import * as convert from "xml-js";
 import * as eol from "eol";
-import * as config from "../SolutionExplorerConfiguration";
-import { getLineEndings } from "../SolutionExplorerConfiguration";
+import * as config from "../StyleCopManagerConfiguration";
+import { getLineEndings } from "../StyleCopManagerConfiguration";
 
 const readOptions: convert.Options.XML2JSON = {
     compact: false
@@ -17,7 +17,7 @@ export function ParseToJson(content: string): Promise<any> {
     if (result.declaration) {
         delete result.declaration
     }
-    return Promise.resolve(result);    
+    return Promise.resolve(result);
 }
 
 export function ParseToXml(content: any): Promise<string> {

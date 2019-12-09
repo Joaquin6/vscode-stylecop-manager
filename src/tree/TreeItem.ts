@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as TreeItemIconProvider from "./TreeItemIconProvider";
-import * as SolutionExplorerConfiguration from "../SolutionExplorerConfiguration";
+import * as StyleCopManagerConfiguration from "../StyleCopManagerConfiguration";
 import { TreeItemContext } from "./TreeItemContext";
 import { SolutionFile } from "../model/Solutions";
 import { Project } from "../model/Projects";
@@ -59,14 +59,14 @@ export abstract class TreeItem extends vscode.TreeItem {
 				this.children = [];
 			}
         }
-		
+
 		return this.children;
     }
 
 	public collapse(): void {
 		if (this.collapsibleState == vscode.TreeItemCollapsibleState.None) return;
 		if (this.children) this.children.forEach(c => c.collapse());
-		
+
 		this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
 		this.context.provider.refresh(this);
 	}
@@ -119,15 +119,15 @@ export abstract class TreeItem extends vscode.TreeItem {
 			id = this.solution.FullPath + '[' + this.contextValue + ']';
 		else
 			id = this.label + '[' + this.contextValue + ']';
-		
+
 		this.id = id;
 	}
 
 	protected loadIcon(): void {
-		let iconType = SolutionExplorerConfiguration.getSolutionExplorerIcons();
-		
-		if (iconType == SolutionExplorerConfiguration.ICONS_CUSTOM 
-		   || (iconType == SolutionExplorerConfiguration.ICONS_MIXED && !this._allowIconTheme)) {
+		let iconType = StyleCopManagerConfiguration.getStyleCopManagerIcons();
+
+		if (iconType == StyleCopManagerConfiguration.ICONS_CUSTOM
+		   || (iconType == StyleCopManagerConfiguration.ICONS_MIXED && !this._allowIconTheme)) {
 			this.iconPath = TreeItemIconProvider.findIconPath(this.label, this.path, this.contextValue);
 		} else {
 			let fullpath = this.path;
@@ -152,7 +152,7 @@ export abstract class TreeItem extends vscode.TreeItem {
 				}
 			});
 		}
-		
+
 		return result;
     }
 }

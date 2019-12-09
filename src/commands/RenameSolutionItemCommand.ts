@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "../async/fs"
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { SolutionProjectType, ProjectInSolution, SolutionFile } from "../model/Solutions";
@@ -8,7 +8,7 @@ import { InputTextCommandParameter } from "./parameters/InputTextCommandParamete
 
 export class RenameSolutionItemCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Rename');
     }
 
@@ -29,14 +29,14 @@ export class RenameSolutionItemCommand extends CommandBase {
                 let name = args[0];
                 if (!name.toLowerCase().endsWith('.sln'))
                     name += '.sln';
-                
+
                 await this.renameFile(item.solution.FullPath, name);
 
                 this.provider.logger.log("Solution renamed: " + name);
                 this.provider.refresh();
             } else {
                 let data: string = await fs.readFile(item.solution.FullPath, 'utf8');
-                let lines: string[] = data.split('\n'); 
+                let lines: string[] = data.split('\n');
 
                 lines.some((l, index) => {
                     if (l.indexOf('"' + item.label + '"') >= 0) {
@@ -49,13 +49,13 @@ export class RenameSolutionItemCommand extends CommandBase {
                     }
                     return false;
                 });
-                
+
                 if (item.project) {
                     let ext = path.extname(item.project.fullPath);
                     let sourceName = item.project.fullPath.replace(path.dirname(item.project.fullPath), '');
-                    if (sourceName.startsWith(path.sep)) 
+                    if (sourceName.startsWith(path.sep))
                         sourceName = sourceName.substring(1);
-                    
+
                     let name = args[0];
                     if (!name.toLowerCase().endsWith(ext))
                         name += ext;
@@ -77,7 +77,7 @@ export class RenameSolutionItemCommand extends CommandBase {
             }
         } catch(ex) {
             this.provider.logger.error('Can not rename this item: ' + ex);
-        }    
+        }
     }
 
     private async renameFile(fullpath: string, name: string): Promise<string> {

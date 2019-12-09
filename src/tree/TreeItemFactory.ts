@@ -3,7 +3,7 @@ import { ProjectInSolution, SolutionProjectType, SolutionFile, ProjectTypeIds } 
 import { Project, ProjectFactory } from "../model/Projects";
 import { TreeItem } from "./TreeItem";
 import { TreeItemContext } from "./TreeItemContext";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { SolutionFolderTreeItem } from "./items/SolutionFolderTreeItem";
 import { UnknownProjectTreeItem } from "./items/UnknownProjectTreeItem";
 import { ProjectTreeItem } from "./items/ProjectTreeItem";
@@ -18,12 +18,12 @@ import { SharedProjectTreeItem } from "./items/standard/SharedProjectTreeItem";
 import { DeployProjectTreeItem } from "./items/standard/DeployProjectTreeItem";
 import { SolutionFileTreeItem } from "./items/SolutionFileTreeItem";
 
-export function CreateNoSolution(provider: SolutionExplorerProvider, rootPath: string): Promise<TreeItem> {
+export function CreateNoSolution(provider: StyleCopManagerProvider, rootPath: string): Promise<TreeItem> {
     let context = new TreeItemContext(provider, null);
     return Promise.resolve(new NoSolutionTreeItem(context, rootPath));
 }
 
-export async function CreateFromSolution(provider: SolutionExplorerProvider, solution: SolutionFile): Promise<TreeItem> {
+export async function CreateFromSolution(provider: StyleCopManagerProvider, solution: SolutionFile): Promise<TreeItem> {
     let context = new TreeItemContext(provider, solution);
     let treeItem = new SolutionTreeItem(context);
     await treeItem.getChildren();
@@ -40,7 +40,7 @@ export async function CreateItemsFromSolution(context: TreeItemContext, solution
         if (projectInSolution && project.parentProjectGuid != projectInSolution.projectGuid) return false;
         if (project.projectType == SolutionProjectType.SolutionFolder)
             folders.push(project);
-        else 
+        else
             projects.push(project);
     });
 
@@ -63,7 +63,7 @@ export async function CreateItemsFromSolution(context: TreeItemContext, solution
     for(let i = 0; i < projects.length; i++) {
         result.push(await CreateFromProject(context, projects[i]));
     }
-    
+
     if (projectInSolution) {
         Object.keys(projectInSolution.solutionItems).forEach(k => {
             const fullpath = path.join(solution.FolderPath, projectInSolution.solutionItems[k]);
@@ -79,7 +79,7 @@ async function CreateFromProject(context: TreeItemContext, project: ProjectInSol
         let treeItem = new SolutionFolderTreeItem(context, project);
         await treeItem.getChildren();
         return treeItem;
-    } 
+    }
 
     let p = await ProjectFactory.parse(project);
     let projectContext = context.copy(p);
@@ -98,7 +98,7 @@ async function CreateFromProject(context: TreeItemContext, project: ProjectInSol
 export async function CreateItemsFromProject(context: TreeItemContext, project: Project, virtualPath?: string): Promise<TreeItem[]> {
     let items = await project.getProjectFilesAndFolders(virtualPath);
     let result: TreeItem[] = [];
-    
+
     items.folders.forEach(folder => {
         result.push(new ProjectFolderTreeItem(context, folder));
     });

@@ -4,7 +4,7 @@ const ConfigurationName = 'vssolution';
 const ItemTypesName = 'xxprojItemTypes';
 const ShowModeName = 'showMode';
 const TrackActiveItemName = 'trackActiveItem';
-const SolutionExplorerIconsName = 'solutionExplorerIcons';
+const StyleCopManagerIconsName = 'styleCopManagerIcons';
 const ShowOutputChannelName = 'showOutputChannel';
 const NetcoreIgnoreName = 'netcoreIgnore';
 const AlternativeSolutionFoldersName = 'altSolutionFolders';
@@ -40,8 +40,8 @@ export function getShowMode(): string {
     return config.get<string>(ShowModeName, SHOW_MODE_ACTIVITYBAR);
 }
 
-export function getSolutionExplorerIcons(): string {
-    return config.get<string>(SolutionExplorerIconsName, ICONS_CUSTOM);
+export function getStyleCopManagerIcons(): string {
+    return config.get<string>(StyleCopManagerIconsName, ICONS_CUSTOM);
 }
 
 export function getTrackActiveItem(): boolean {
@@ -94,7 +94,7 @@ export type LineEndingsType = "lf" | "crlf";
 
 export const ICONS_THEME = "current-theme";
 export const ICONS_MIXED = "mix";
-export const ICONS_CUSTOM = "solution-explorer";
+export const ICONS_CUSTOM = "stylecop-manager";
 
 export const SHOW_MODE_ACTIVITYBAR = "activityBar";
 export const SHOW_MODE_EXPLORER = "explorer";

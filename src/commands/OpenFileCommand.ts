@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 
@@ -16,14 +16,14 @@ export class OpenFileCommand extends CommandBase {
         return false;
     }
 
-    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {    
+    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {
         let options: vscode.TextDocumentShowOptions = {
             preview: !this.checkDoubleClick(item),
             preserveFocus: true
         };
         let filepath = item.path;
         let document = await vscode.workspace.openTextDocument(filepath);
-        vscode.window.showTextDocument(document, options);  
+        vscode.window.showTextDocument(document, options);
     }
 
     private checkDoubleClick(item: TreeItem): boolean {

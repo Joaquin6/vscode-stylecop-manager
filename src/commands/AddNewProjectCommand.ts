@@ -1,6 +1,6 @@
 import * as path from "path";
 import { CliCommandBase } from "./base/CliCommandBase";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree/TreeItem";
 import { StaticCommandParameter } from "./parameters/StaticCommandParameter";
 import { InputTextCommandParameter } from "./parameters/InputTextCommandParameter";
@@ -21,7 +21,7 @@ const ProjectTypes = [
 ];
 
 export class AddNewProjectCommand extends CliCommandBase {
-    constructor(provider: SolutionExplorerProvider) {
+    constructor(provider: StyleCopManagerProvider) {
         super('Add new project', provider, 'dotnet');
     }
 

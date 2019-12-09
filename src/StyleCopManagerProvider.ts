@@ -2,14 +2,14 @@ import * as vscode from "vscode";
 import * as fs from "./async/fs";
 import * as path from "path";
 import * as sln from "./tree";
-import * as SolutionExplorerConfiguration from "./SolutionExplorerConfiguration";
+import * as StyleCopManagerConfiguration from "./StyleCopManagerConfiguration";
 import * as Utilities from "./model/Utilities";
 import { SolutionFile } from "./model/Solutions";
 import { IEventAggegator, EventTypes, IEvent, ISubscription, IFileEvent } from "./events";
 import { ILogger, Logger } from "./log";
 import { ITemplateEngine, TemplateEngine } from "./templates";
 
-export class SolutionExplorerProvider implements vscode.TreeDataProvider<sln.TreeItem> {
+export class StyleCopManagerProvider implements vscode.TreeDataProvider<sln.TreeItem> {
 	private _logger: ILogger;
 	private _templateEngine: ITemplateEngine;
 	private subscription: ISubscription = null;
@@ -35,20 +35,20 @@ export class SolutionExplorerProvider implements vscode.TreeDataProvider<sln.Tre
 	}
 
 	public register() {
-		let showMode = SolutionExplorerConfiguration.getShowMode();
-		vscode.commands.executeCommand('setContext', 'solutionExplorer.loadedFlag', !false);
-		vscode.commands.executeCommand('setContext', 'solutionExplorer.viewInActivityBar', showMode === SolutionExplorerConfiguration.SHOW_MODE_ACTIVITYBAR);
-		vscode.commands.executeCommand('setContext', 'solutionExplorer.viewInExplorer', showMode === SolutionExplorerConfiguration.SHOW_MODE_EXPLORER);
-		vscode.commands.executeCommand('setContext', 'solutionExplorer.viewInNone', showMode === SolutionExplorerConfiguration.SHOW_MODE_NONE);
+		let showMode = StyleCopManagerConfiguration.getShowMode();
+		vscode.commands.executeCommand('setContext', 'StyleCopManager.loadedFlag', !false);
+		vscode.commands.executeCommand('setContext', 'StyleCopManager.viewInActivityBar', showMode === StyleCopManagerConfiguration.SHOW_MODE_ACTIVITYBAR);
+		vscode.commands.executeCommand('setContext', 'StyleCopManager.viewInExplorer', showMode === StyleCopManagerConfiguration.SHOW_MODE_EXPLORER);
+		vscode.commands.executeCommand('setContext', 'StyleCopManager.viewInNone', showMode === StyleCopManagerConfiguration.SHOW_MODE_NONE);
 
-		if (showMode !== SolutionExplorerConfiguration.SHOW_MODE_NONE) {
+		if (showMode !== StyleCopManagerConfiguration.SHOW_MODE_NONE) {
 			this.subscription = this.eventAggregator.subscribe(EventTypes.File, evt => this.onFileEvent(evt))
-			this.treeView = vscode.window.createTreeView('solutionExplorer', { treeDataProvider: this });
+			this.treeView = vscode.window.createTreeView('StyleCopManager', { treeDataProvider: this });
 		}
 	}
 
 	public unregister() {
-		if (SolutionExplorerConfiguration.getShowMode() !== SolutionExplorerConfiguration.SHOW_MODE_NONE) {
+		if (StyleCopManagerConfiguration.getShowMode() !== StyleCopManagerConfiguration.SHOW_MODE_NONE) {
 			this.subscription.dispose();
 			this.subscription = null;
 			this.treeView.dispose();
@@ -113,7 +113,7 @@ export class SolutionExplorerProvider implements vscode.TreeDataProvider<sln.Tre
 		this.children = [];
 		let solutionPaths = await Utilities.searchFilesInDir(this.workspaceRoot, '.sln');
 		if (solutionPaths.length <= 0) {
-			let altFolders = SolutionExplorerConfiguration.getAlternativeSolutionFolders();
+			let altFolders = StyleCopManagerConfiguration.getAlternativeSolutionFolders();
 			for (let i = 0; i < altFolders.length; i++) {
 				let altSolutionPaths = await Utilities.searchFilesInDir(path.join(this.workspaceRoot, altFolders[i]), '.sln');
 				solutionPaths = [ ...solutionPaths, ...altSolutionPaths]
@@ -148,7 +148,7 @@ export class SolutionExplorerProvider implements vscode.TreeDataProvider<sln.Tre
 	}
 
 	private async checkTemplatesToInstall(): Promise<void> {
-		if (SolutionExplorerConfiguration.getCreateTemplateFolderQuestion() && !(await this.templateEngine.existsTemplates())) {
+		if (StyleCopManagerConfiguration.getCreateTemplateFolderQuestion() && !(await this.templateEngine.existsTemplates())) {
 			let option = await vscode.window.showWarningMessage("Would you like to create the vscode-solution-explorer templates folder?", 'Yes', 'No');
 			if (option !== null && option !== undefined && option == 'Yes') {
 				await this.templateEngine.creteTemplates();
@@ -157,7 +157,7 @@ export class SolutionExplorerProvider implements vscode.TreeDataProvider<sln.Tre
 	}
 
 	private onActiveEditorChanged(): void {
-		let shouldExecute = SolutionExplorerConfiguration.getTrackActiveItem();
+		let shouldExecute = StyleCopManagerConfiguration.getTrackActiveItem();
 		if (!shouldExecute) return;
 		if (!vscode.window.activeTextEditor) return;
 		if (vscode.window.activeTextEditor.document.uri.scheme !== 'file') return;

@@ -1,12 +1,12 @@
 import { OpenDialogOptions } from "vscode";
 import { CliCommandBase } from "./base/CliCommandBase";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree/TreeItem";
 import { StaticCommandParameter } from "./parameters/StaticCommandParameter";
 import { OpenFileCommandParameter } from "./parameters/OpenFileCommandParameter";
 
 export class AddExistingProjectCommand extends CliCommandBase {
-    constructor(provider: SolutionExplorerProvider) {
+    constructor(provider: StyleCopManagerProvider) {
         super('Add existing project', provider, 'dotnet');
     }
 

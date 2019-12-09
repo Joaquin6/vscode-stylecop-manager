@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { InputOptionsCommandParameter } from "./parameters/InputOptionsCommandParameter";
 
 export class MoveCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Move');
     }
 
@@ -27,12 +27,12 @@ export class MoveCommand extends CommandBase {
                 newPath = await item.project.moveFile(item.path, args[0]);
             else if (item.contextValue.startsWith(ContextValues.ProjectFolder))
                 newPath = await item.project.moveFolder(item.path, args[0]);
-            else 
+            else
                 return;
 
             this.provider.logger.log("Moved: " + item.path + " -> " + newPath);
         } catch(ex) {
             this.provider.logger.error('Can not move item: ' + ex);
-        }    
+        }
     }
 }

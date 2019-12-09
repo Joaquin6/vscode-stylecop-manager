@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { InputTextCommandParameter } from "./parameters/InputTextCommandParameter";
 import { InputOptionsCommandParameter } from "./parameters/InputOptionsCommandParameter";
 
 export class CreateFileCommand extends CommandBase {
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Create file');
 
         this.parameters = [
@@ -31,11 +31,11 @@ export class CreateFileCommand extends CommandBase {
             let content = await this.getContent(item);
             let filepath = await item.project.createFile(targetpath, args[0], content);
             let document = await vscode.workspace.openTextDocument(filepath);
-            vscode.window.showTextDocument(document);  
+            vscode.window.showTextDocument(document);
             this.provider.logger.log("File created: " + filepath);
         } catch(ex) {
             this.provider.logger.error('Can not create file: ' + ex);
-        }    
+        }
     }
 
     private async getTemplatesTypes(): Promise<string[]> {

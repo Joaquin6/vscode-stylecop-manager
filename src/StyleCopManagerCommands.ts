@@ -1,12 +1,12 @@
 
 import * as vscode from "vscode";
-import { SolutionExplorerProvider } from "./SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "./StyleCopManagerProvider";
 import * as cmds from "./commands";
 
-export class SolutionExplorerCommands {
+export class StyleCopManagerCommands {
     private commands: { [id:string]: cmds.ICommand } = {};
 
-    constructor(private readonly context: vscode.ExtensionContext, private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly context: vscode.ExtensionContext, private readonly provider: StyleCopManagerProvider) {
         this.commands['refresh'] = new cmds.RefreshCommand(provider);
         this.commands['collapseAll'] = new cmds.CollapseAllCommand(provider);
         this.commands['openFile'] = new cmds.OpenFileCommand();
@@ -45,7 +45,7 @@ export class SolutionExplorerCommands {
 
     public register() {
         Object.keys(this.commands).forEach(key => {
-            this.registerCommand('solutionExplorer.' + key, this.commands[key]);
+            this.registerCommand('StyleCopManager.' + key, this.commands[key]);
         });
     }
 

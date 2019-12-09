@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { InputTextCommandParameter } from "./parameters/InputTextCommandParameter";
 
 export class RenameCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Rename');
     }
 
@@ -26,12 +26,12 @@ export class RenameCommand extends CommandBase {
                 await item.project.renameFile(item.path, args[0]);
             else if (item.contextValue.startsWith(ContextValues.ProjectFolder))
                 await item.project.renameFolder(item.path, args[0]);
-            else 
+            else
                 return;
 
             this.provider.logger.log("Renamed: " + item.path + " -> " + args[0]);
         } catch(ex) {
             this.provider.logger.error('Can not rename item: ' + ex);
-        }    
+        }
     }
 }

@@ -1,8 +1,8 @@
 import { window, OutputChannel } from "vscode";
 import { EventTypes, IEvent, ILogEvent, LogEventType, IEventAggegator, ISubscription } from "./events";
-import * as SolutionExplorerConfiguration from "./SolutionExplorerConfiguration";
+import * as StyleCopManagerConfiguration from "./StyleCopManagerConfiguration";
 
-export class SolutionExplorerOutputChannel {
+export class StyleCopManagerOutputChannel {
     private outputChannel: OutputChannel;
     private subscription: ISubscription;
     private shouldShow: boolean;
@@ -11,7 +11,7 @@ export class SolutionExplorerOutputChannel {
     }
 
     public register(): void {
-        this.shouldShow = SolutionExplorerConfiguration.getShowOutputChannel();
+        this.shouldShow = StyleCopManagerConfiguration.getShowOutputChannel();
         if (!this.shouldShow) return;
 
         this.outputChannel = window.createOutputChannel('Solution Explorer');

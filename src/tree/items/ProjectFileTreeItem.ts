@@ -11,7 +11,7 @@ export class ProjectFileTreeItem extends TreeItem {
     }
 
     command = {
-		command: 'solutionExplorer.openFile',
+		command: 'StyleCopManager.openFile',
 		arguments: [this],
 		title: 'Open File'
 	};

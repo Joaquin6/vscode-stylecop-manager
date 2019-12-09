@@ -1,11 +1,11 @@
 import { CliCommandBase } from "./base/CliCommandBase";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree/TreeItem";
 import { StaticCommandParameter } from "./parameters/StaticCommandParameter";
 import { ContextValues } from "../tree";
 
 export class CleanCommand extends CliCommandBase {
-    constructor(provider: SolutionExplorerProvider) {
+    constructor(provider: StyleCopManagerProvider) {
         super('Clean', provider, 'dotnet');
     }
 
@@ -14,7 +14,7 @@ export class CleanCommand extends CliCommandBase {
             new StaticCommandParameter('clean'),
             new StaticCommandParameter(item.path)
         ];
-        
+
         return true;
     }
 }

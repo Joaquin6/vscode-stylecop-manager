@@ -1,11 +1,11 @@
 import * as clipboardy from "clipboardy";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 
 export class CopyCommand extends CommandBase {
-    
-    constructor(private readonly provider: SolutionExplorerProvider) {
+
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Copy');
     }
 
@@ -14,7 +14,7 @@ export class CopyCommand extends CommandBase {
         return false;
     }
 
-    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {    
+    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {
         await clipboardy.write(item.path);
     }
 }

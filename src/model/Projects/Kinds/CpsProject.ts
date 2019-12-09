@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as fs from "../../../async/fs";
 import * as xml from "../../../async/xml";
-import * as SolutionExplorerConfiguration from "../../../SolutionExplorerConfiguration";
+import * as StyleCopManagerConfiguration from "../../../StyleCopManagerConfiguration";
 import * as Utilities from "../../Utilities";
 import { ProjectInSolution } from "../../Solutions";
 import { ProjectFile } from "../ProjectFile";
@@ -47,23 +47,23 @@ export class CpsProject extends FileSystemBasedProject {
         let files: ProjectFile[] = [];
         let folders: ProjectFolder[] = [];
 
-        let ignore = SolutionExplorerConfiguration.getNetCoreIgnore();
+        let ignore = StyleCopManagerConfiguration.getNetCoreIgnore();
         result.files.forEach(file => {
             if (!this.fullPath.endsWith(file.fullPath) && ignore.indexOf(file.name.toLocaleLowerCase()) < 0)
                 files.push(file);
         });
 
-        
+
         result.folders.forEach(folder => {
             if (ignore.indexOf(folder.name.toLocaleLowerCase()) < 0)
                 folders.push(folder);
         });
-        
+
         return { files, folders };
     }
 
     public async getFolderList(): Promise<string[]> {
-        let ignore = SolutionExplorerConfiguration.getNetCoreIgnore();
+        let ignore = StyleCopManagerConfiguration.getNetCoreIgnore();
         let folderPath = path.dirname(this.projectInSolution.fullPath);
         let directories = await Utilities.getAllDirectoriesRecursive(folderPath, ignore);
         let result: string[] = [ '.' + path.sep ];
@@ -87,10 +87,10 @@ export class CpsProject extends FileSystemBasedProject {
     private parseDocument(document: any): void {
         this.document = document;
         let project = CpsProject.getProjectElement(this.document);
-        
+
         if (!project) project = { elements: [] };
         if (!project.elements || !Array.isArray(project.elements)) project.elements = [];
-        
+
         project.elements.forEach(element => {
             if (element.name === 'ItemGroup') {
                 if (!element.elements || !Array.isArray(element.elements)) element.elements = [];

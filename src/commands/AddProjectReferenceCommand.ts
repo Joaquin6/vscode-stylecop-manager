@@ -1,13 +1,13 @@
 import * as path from "path";
 import { CliCommandBase } from "./base/CliCommandBase";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree";
 import { StaticCommandParameter } from "./parameters/StaticCommandParameter";
 import { InputOptionsCommandParameter } from "./parameters/InputOptionsCommandParameter";
 import { SolutionProjectType, ProjectInSolution } from "../model/Solutions";
 
 export class AddProjectReferenceCommand extends CliCommandBase {
-    constructor(provider: SolutionExplorerProvider) {
+    constructor(provider: StyleCopManagerProvider) {
         super('Add project reference', provider, 'dotnet');
     }
 
@@ -36,7 +36,7 @@ export class AddProjectReferenceCommand extends CliCommandBase {
 
     private getProjectName(project: ProjectInSolution, projects: ProjectInSolution[]): any {
         if (!project.parentProjectGuid) return project.projectName;
-       
+
         let index = projects.findIndex(p => p.projectGuid == project.parentProjectGuid);
         if (index <= 0) return project.projectName;
         return this.getProjectName(projects[index], projects) + path.sep + project.projectName;

@@ -1,6 +1,6 @@
 import * as uuid from "uuid";
 import * as fs from "../async/fs"
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { InputTextCommandParameter } from "./parameters/InputTextCommandParameter";
@@ -8,7 +8,7 @@ import { SolutionProjectType, ProjectInSolution } from "../model/Solutions";
 
 export class CreateSolutionFolderCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Create solution folder');
 
         this.parameters = [

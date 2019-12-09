@@ -1,11 +1,11 @@
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { IEventAggegator } from "../events";
 import { TreeItem } from "./";
 import { SolutionFile } from "../model/Solutions";
 import { Project } from "../model/Projects";
-    
+
 export class TreeItemContext {
-    constructor(public readonly provider: SolutionExplorerProvider, public readonly solution: SolutionFile, public readonly project?: Project, public readonly parent?: TreeItem) {
+    constructor(public readonly provider: StyleCopManagerProvider, public readonly solution: SolutionFile, public readonly project?: Project, public readonly parent?: TreeItem) {
     }
 
     public get eventAggregator(): IEventAggegator {

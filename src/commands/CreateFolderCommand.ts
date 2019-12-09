@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { InputTextCommandParameter } from "./parameters/InputTextCommandParameter";
 
 export class CreateFolderCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Create folder');
 
         this.parameters = [
@@ -26,12 +26,12 @@ export class CreateFolderCommand extends CommandBase {
             let targetpath: string = item.path;
             if (!item.contextValue.startsWith(ContextValues.ProjectFolder))
                 targetpath = path.dirname(targetpath);
-                
+
             let folderpath = path.join(targetpath, args[0]);
             await item.project.createFolder(folderpath);
             this.provider.logger.log("Folder created: " + args[0]);
         } catch(ex) {
             this.provider.logger.error('Can not create folder: ' + ex);
-        }    
+        }
     }
 }

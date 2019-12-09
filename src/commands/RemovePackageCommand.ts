@@ -1,11 +1,11 @@
 import { CliCommandBase } from "./base/CliCommandBase";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem } from "../tree/TreeItem";
 import { StaticCommandParameter } from "./parameters/StaticCommandParameter";
 import { InputTextCommandParameter } from "./parameters/InputTextCommandParameter";
 
 export class RemovePackageCommand extends CliCommandBase {
-    constructor(provider: SolutionExplorerProvider) {
+    constructor(provider: StyleCopManagerProvider) {
         super('Remove package', provider, 'dotnet');
     }
 

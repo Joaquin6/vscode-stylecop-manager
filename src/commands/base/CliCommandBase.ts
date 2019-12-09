@@ -4,16 +4,16 @@ import * as vscode from "vscode";
 import { spawn, execSync } from 'child_process';
 import { TreeItem, ContextValues } from '../../tree';
 import { CommandBase } from './CommandBase';
-import { SolutionExplorerProvider } from '../../SolutionExplorerProvider';
+import { StyleCopManagerProvider } from '../../StyleCopManagerProvider';
 import * as iconv from 'iconv-lite';
-import * as configuration from '../../SolutionExplorerConfiguration';
+import * as configuration from '../../StyleCopManagerConfiguration';
 
 const TERMINAL_NAME:string = "dotnet";
 
 export abstract class CliCommandBase extends CommandBase {
     private codepage: string = "65001";
 
-    constructor(title: string, protected readonly provider: SolutionExplorerProvider, protected readonly app: string) {
+    constructor(title: string, protected readonly provider: StyleCopManagerProvider, protected readonly app: string) {
         super(title);
     }
 
@@ -57,7 +57,7 @@ export abstract class CliCommandBase extends CommandBase {
                 return iconv.decode(data, encodings[keys[i]]);
             }
         }
-       
+
         return data.toString();
     }
 

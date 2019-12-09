@@ -1,7 +1,7 @@
 import { workspace, FileSystemWatcher, Uri } from "vscode";
 import { IFileEvent, FileEvent, FileEventType, IEventAggegator } from "./events";
 
-export class SolutionExplorerFileWatcher {
+export class StyleCopManagerFileWatcher {
     private fileWatcher: FileSystemWatcher;
 
     constructor(public readonly eventAggregator: IEventAggegator){

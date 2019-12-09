@@ -1,12 +1,12 @@
 import * as fs from "../async/fs"
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 import { SolutionProjectType, ProjectInSolution } from "../model/Solutions";
 
 export class RemoveSolutionFolderCommand extends CommandBase {
 
-    constructor(private readonly provider: SolutionExplorerProvider) {
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Remove solution folder');
 
         this.parameters = [
@@ -26,7 +26,7 @@ export class RemoveSolutionFolderCommand extends CommandBase {
 
         try {
             let data: string = await fs.readFile(item.solution.FullPath, 'utf8');
-            let lines: string[] = data.split('\n'); 
+            let lines: string[] = data.split('\n');
             let toDelete: ProjectInSolution[] = [ projectInSolution ];
             item.solution.Projects.forEach(p => {
                 if (p.parentProjectGuid == projectInSolution.projectGuid) {
@@ -42,7 +42,7 @@ export class RemoveSolutionFolderCommand extends CommandBase {
             this.provider.logger.log("Solution folder deleted");
         } catch(ex) {
             this.provider.logger.error('Can not delete solution folder: ' + ex);
-        }    
+        }
     }
 
     private deleteProject(p: ProjectInSolution, lines: string[]): void {

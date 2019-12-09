@@ -1,13 +1,13 @@
 import * as path from "path";
 import * as fs from "../async/fs";
 import * as Utilities from "../model/Utilities";
-import { SolutionExplorerProvider } from "../SolutionExplorerProvider";
+import { StyleCopManagerProvider } from "../StyleCopManagerProvider";
 import { TreeItem, ContextValues } from "../tree";
 import { CommandBase } from "./base/CommandBase";
 
 export class DuplicateCommand extends CommandBase {
-    
-    constructor(private readonly provider: SolutionExplorerProvider) {
+
+    constructor(private readonly provider: StyleCopManagerProvider) {
         super('Duplicate');
     }
 
@@ -16,8 +16,8 @@ export class DuplicateCommand extends CommandBase {
         return false;
     }
 
-    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {    
-        try {        
+    protected async runCommand(item: TreeItem, args: string[]): Promise<void> {
+        try {
             let filepath = await Utilities.createCopyName(item.path);
             let filename = path.basename(filepath);
             let folder = path.dirname(filepath);
@@ -26,6 +26,6 @@ export class DuplicateCommand extends CommandBase {
             this.provider.logger.log("File duplicated: " + filepath);
         } catch(ex) {
             this.provider.logger.error('Can not duplicate file: ' + ex);
-        }    
+        }
     }
 }
