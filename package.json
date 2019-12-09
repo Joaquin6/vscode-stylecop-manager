@@ -6,6 +6,7 @@
   "author": "Joaquin Briceno <joaquinbriceno1@gmail.com>",
   "license": "ISC",
   "main": "./out/extension",
+  "icon": "images/icon.png",
   "bugs": {
     "url": "https://github.com/Joaquin6/vscode-stylecop-manager/issues"
   },
@@ -13,6 +14,15 @@
     "type": "git",
     "url": "git+https://github.com/Joaquin6/vscode-stylecop-manager.git"
   },
+  "engines": {
+    "vscode": "^1.40.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
